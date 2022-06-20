@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! define_read {
+macro_rules! _define_read {
     ($words:ident) => {
         macro_rules! read {
             () => {
@@ -27,7 +27,7 @@ macro_rules! define_read {
 }
 
 #[macro_export]
-macro_rules! define_out {
+macro_rules! _define_out {
     ($stdout:ident, $dollar:tt) => {
         macro_rules! out {
             ($dollar ($dollar arg:tt)*) => {
@@ -48,7 +48,7 @@ macro_rules! define_out {
 }
 
 #[macro_export]
-macro_rules! cf_prelude {
+macro_rules! _cf_prelude {
     () => {
         let mut input = String::new();
         std::io::Read::read_to_string(&mut std::io::stdin(), &mut input).unwrap();
@@ -57,8 +57,14 @@ macro_rules! cf_prelude {
         let out = ::std::io::stdout();
         let mut out = ::std::io::BufWriter::new(out.lock());
 
-        define_read!(words);
+        $crate::define_read!(words);
 
-        define_out!(out, $);
+        $crate::define_out!(out, $);
     };
 }
+
+pub use {
+    crate::_cf_prelude as cf_prelude,
+    crate::_define_out as define_out,
+    crate::_define_read as define_read,
+};
