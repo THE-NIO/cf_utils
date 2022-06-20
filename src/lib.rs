@@ -1,5 +1,4 @@
 #[macro_export]
-#[rustfmt::skip]
 macro_rules! define_read {
     ($words:ident) => {
         macro_rules! read {
@@ -28,7 +27,6 @@ macro_rules! define_read {
 }
 
 #[macro_export]
-#[rustfmt::skip]
 macro_rules! define_out {
     ($stdout:ident, $dollar:tt) => {
         macro_rules! out {
