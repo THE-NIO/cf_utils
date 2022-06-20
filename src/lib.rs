@@ -1,6 +1,7 @@
 #[macro_export]
 macro_rules! _define_read {
     ($words:ident) => {
+        #[allow(unused_macros)]
         macro_rules! read {
             () => {
                 $words.next().unwrap().parse().unwrap()
@@ -29,12 +30,14 @@ macro_rules! _define_read {
 #[macro_export]
 macro_rules! _define_out {
     ($stdout:ident, $dollar:tt) => {
+        #[allow(unused_macros)]
         macro_rules! out {
             ($dollar ($dollar arg:tt)*) => {
                 ::std::io::Write::write_fmt(&mut $stdout, format_args!($dollar ($dollar arg)*)).unwrap();
             };
         }
 
+        #[allow(unused_macros)]
         macro_rules! outln {
             () => {
                 ::std::io::Write::write_all(&mut $stdout, b"\n").unwrap();
