@@ -1,6 +1,33 @@
 #[macro_export]
+macro_rules! _build_rest {
+    ($n:expr; $words:ident; $($accum:tt)*) => {
+        $words
+            .by_ref()
+            .take($n)
+            $($accum)*
+            .collect::<Vec<_>>()
+    }
+}
+
+#[macro_export]
+macro_rules! _parse_rest {
+    (decr; $n:expr; $words:ident; $($accum:tt)*) => {
+        $crate::_build_rest($n; $words; $($accum)* .map(|x| x - 1))
+    };
+    (decr, $($rest:tt)*) => {
+        $crate::_parse_rest!($($rest)* .map(|x| x - 1))
+    };
+    ($filter:expr; $n:expr; $words:ident; $($accum:tt)*) => {
+        $crate::_build_rest!($n; $words; $($accum)* .map($filter))
+    };
+    ($filter:expr, $($rest:tt)*) => {
+        $crate::_parse_rest!($($rest)* .map($filter))
+    }
+}
+
+#[macro_export]
 macro_rules! _define_read {
-    ($words:ident) => {
+    ($words:ident, $dollar:tt) => {
         #[allow(unused_macros)]
         macro_rules! read {
             () => {
@@ -10,19 +37,11 @@ macro_rules! _define_read {
                 $words.next().unwrap().parse::<$t>().unwrap()
             };
             ($t:ty; $n:expr) => {
-                read!($t, |a| a; $n)
+                $crate::_build_rest!($n; $words; )
             };
-            ($t:ty, decr; $n: expr) => {
-                read!($t, |a| a - 1; $n)
-            };
-            ($t:ty, $f:expr; $n: expr) => {
-                $words
-                    .by_ref()
-                    .take($n)
-                    .map(|s| s.parse::<$t>().unwrap())
-                    .map($f)
-                    .collect::<Vec<_>>()
-            };
+            ($t:ty, $dollar ($dollar rest:tt)*) => {
+                $crate::_parse_rest!($dollar ($dollar rest)*; $words; .map(|s| s.parse::<$t>().unwrap()))
+            }
         }
     };
 }
@@ -60,7 +79,7 @@ macro_rules! _cf_prelude {
         let out = ::std::io::stdout();
         let mut out = ::std::io::BufWriter::new(out.lock());
 
-        $crate::define_read!(words);
+        $crate::define_read!(words, $);
 
         $crate::define_out!(out, $);
     };
