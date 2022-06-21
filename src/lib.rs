@@ -37,7 +37,7 @@ macro_rules! _define_read {
                 $words.next().unwrap().parse::<$t>().unwrap()
             };
             ($t:ty; $n:expr) => {
-                $crate::_build_rest!($n; $words; )
+                $crate::_build_rest!($n; $words; .map(|s| s.parse::<$t>().unwrap()))
             };
             ($t:ty, $dollar ($dollar rest:tt)*) => {
                 $crate::_parse_rest!($dollar ($dollar rest)*; $words; .map(|s| s.parse::<$t>().unwrap()))
