@@ -11,14 +11,14 @@ macro_rules! _build_rest {
 
 #[macro_export]
 macro_rules! _parse_rest {
-    (decr; $n:expr; $words:ident; $($accum:tt)*) => {
-        $crate::_build_rest($n; $words; $($accum)* .map(|x| x - 1))
+    (decr; $($rest:tt)*) => {
+        $crate::_build_rest!($($rest)* .map(|x| x - 1))
     };
     (decr, $($rest:tt)*) => {
         $crate::_parse_rest!($($rest)* .map(|x| x - 1))
     };
-    ($filter:expr; $n:expr; $words:ident; $($accum:tt)*) => {
-        $crate::_build_rest!($n; $words; $($accum)* .map($filter))
+    ($filter:expr; $($rest:tt)*) => {
+        $crate::_build_rest!($($rest)* .map($filter))
     };
     ($filter:expr, $($rest:tt)*) => {
         $crate::_parse_rest!($($rest)* .map($filter))
@@ -85,8 +85,6 @@ macro_rules! _cf_prelude {
     };
 }
 
-pub use {
-    crate::_cf_prelude as cf_prelude,
-    crate::_define_out as define_out,
-    crate::_define_read as define_read,
+pub use crate::{
+    _cf_prelude as cf_prelude, _define_out as define_out, _define_read as define_read,
 };
