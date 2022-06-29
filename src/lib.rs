@@ -33,6 +33,9 @@ macro_rules! _define_read {
             () => {
                 $words.next().unwrap().parse().unwrap()
             };
+            (raw) => {
+                $words.next().unwrap()
+            };
             ($t:ty) => {
                 $words.next().unwrap().parse::<$t>().unwrap()
             };
