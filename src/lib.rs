@@ -75,12 +75,10 @@ macro_rules! _define_out {
 #[macro_export]
 macro_rules! _cf_prelude {
     () => {
-        let mut input = String::new();
-        std::io::Read::read_to_string(&mut std::io::stdin(), &mut input).unwrap();
+        let input = ::std::io::read_to_string(&mut ::std::io::stdin()).unwrap();
         let mut words = input.split_whitespace();
 
-        let out = ::std::io::stdout();
-        let mut out = ::std::io::BufWriter::new(out.lock());
+        let mut out = ::std::io::BufWriter::new(::std::io::stdout().lock());
 
         $crate::define_read!(words, $);
 
